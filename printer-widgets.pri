@@ -12,7 +12,8 @@ HEADERS += \
     $$PWD/print-pgs/previewimagewdgt.h \
     $$PWD/print-pgs/printersetupwdgt.h \
     $$PWD/print-pgs/printniqrcodewdgt.h \
-    $$PWD/print-pgs/ucprintlabel.h
+    $$PWD/print-pgs/ucprintlabel.h \
+    $$PWD/template-pgs/qrexportwdgt.h
 
 SOURCES += \
     $$PWD/src/printer/exportwdgt2qrcodegen.cpp \
@@ -21,10 +22,12 @@ SOURCES += \
     $$PWD/print-pgs/previewimagewdgt.cpp \
     $$PWD/print-pgs/printersetupwdgt.cpp \
     $$PWD/print-pgs/printniqrcodewdgt.cpp \
-    $$PWD/print-pgs/ucprintlabel.cpp
+    $$PWD/print-pgs/ucprintlabel.cpp \
+    $$PWD/template-pgs/qrexportwdgt.cpp
 
 FORMS += \
     $$PWD/print-pgs/previewimagewdgt.ui \
     $$PWD/print-pgs/printersetupwdgt.ui \
     $$PWD/print-pgs/printniqrcodewdgt.ui \
-    $$PWD/print-pgs/ucprintlabel.ui
+    $$PWD/print-pgs/ucprintlabel.ui \
+    $$PWD/template-pgs/qrexportwdgt.ui
