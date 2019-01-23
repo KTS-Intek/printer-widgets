@@ -3,7 +3,12 @@
 
 #include <QStandardItemModel>
 #include <QItemSelectionModel>
+
+
+///[!] widgets-shared
 #include "gui-src/mysortfilterproxymodel.h"
+
+
 #include "qrcodegeneratortypes.h"
 
 class ExportWdgt2qrcodegen

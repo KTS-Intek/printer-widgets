@@ -5,8 +5,12 @@
 
 #include <QFileDialog>
 #include <QMessageBox>
-#include "gui-src/settloader.h"
 #include <QDebug>
+
+
+///[!] guisett-shared
+#include "gui-src/settloader.h"
+
 
 PreviewImageWdgt::PreviewImageWdgt(const bool &hideRotationSett, QWidget *parent) :
     QWidget(parent),

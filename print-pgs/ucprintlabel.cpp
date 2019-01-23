@@ -2,13 +2,25 @@
 #include "ui_ucprintlabel.h"
 
 #include <QShortcut>
-#include "gui-src/settloader.h"
-#include "moji_defy.h"
+
+
+///[!] printer-widgets
 #include "print-pgs/printersetupwdgt.h"
-#include "src/printer/qrcodegenerator.h"
 #include "src/printer/printerhelper.h"
-#include "src/printer/qrgenconverter.h"
 #include "src/printer/exportwdgt2qrcodegen.h"
+
+
+///[!] guisett-shared
+#include "gui-src/settloader.h"
+
+
+///[!] printer-shared
+#include "src/printer/qrcodegenerator.h"
+#include "src/printer/qrgenconverter.h"
+
+
+#include "moji_defy.h"
+
 
 UcPrintLabel::UcPrintLabel(LastDevInfo *lDevInfo, GuiHelper *gHelper, GuiSett4all *gSett4all, QWidget *parent) :
     MatildaConfWidget(lDevInfo, gHelper, gSett4all, parent),

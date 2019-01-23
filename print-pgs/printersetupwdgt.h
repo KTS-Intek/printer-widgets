@@ -2,7 +2,11 @@
 #define PRINTERSETUPWDGT_H
 
 #include <QWidget>
+
+
+///[!] printer-widgets
 #include "print-pgs/previewimagewdgt.h"
+
 
 namespace Ui {
 class PrinterSetupWdgt;

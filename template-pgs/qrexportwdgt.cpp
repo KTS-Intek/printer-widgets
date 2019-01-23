@@ -2,8 +2,12 @@
 #include "ui_qrexportwdgt.h"
 
 #include <QShortcut>
+
+///[!] printer-shared
 #include "src/printer/qrcodegenerator.h"
 #include "src/printer/qrgenconverter.h"
+
+///[!] guisett-shared
 #include "gui-src/settloader.h"
 
 

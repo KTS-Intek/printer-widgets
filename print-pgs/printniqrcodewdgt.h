@@ -1,9 +1,18 @@
 #ifndef PRINTNIQRCODEWDGT_H
 #define PRINTNIQRCODEWDGT_H
 
+
+///[!] widgets-shared
 #include "gui-src/referencewidgetclass.h"
+
+
+///[!] printer-widgets
 #include "print-pgs/previewimagewdgt.h"
+
+
+///[!] printer-shared
 #include "src/printer/qrcodegeneratortypes.h"
+
 
 namespace Ui {
 class PrintNiQrCodeWdgt;

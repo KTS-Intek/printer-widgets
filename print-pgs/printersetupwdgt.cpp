@@ -12,9 +12,11 @@
 #include <QStandardPaths>
 #include <QTimer>
 #include <QDebug>
+#include <QShortcut>
+
+///[!] printer-shared
 #include "src/printer/printimagehelper.h"
 #include "src/printer/qrcodegenerator.h"
-#include <QShortcut>
 
 #define QR_TEXT_MESSAGE "Hi,\nHow are you?"
 

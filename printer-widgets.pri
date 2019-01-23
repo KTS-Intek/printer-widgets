@@ -1,3 +1,15 @@
+# Version=0.0.1
+#
+# Dependencies
+# printer-widgets
+# printer-shared    ->
+# guisett-shared
+# widgets-shared
+# QZXing            ->
+#
+#
+
+
 INCLUDEPATH  += $$PWD\
                 $$PWD/../../defines/defines\
                 $$PWD/../../defines/define-types

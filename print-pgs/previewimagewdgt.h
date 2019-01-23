@@ -3,10 +3,14 @@
 
 #include <QWidget>
 #include <QPixmap>
-#include "src/printer/printimagehelper.h"
 #include <QVariantMap>
 #include <QWheelEvent>
 #include <QKeyEvent>
+
+
+///[!] printer-shared
+#include "src/printer/printimagehelper.h"
+
 
 namespace Ui {
 class PreviewImageWdgt;
