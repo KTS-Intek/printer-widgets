@@ -10,8 +10,8 @@
 #include "src/printer/exportwdgt2qrcodegen.h"
 
 
-///[!] guisett-shared
-#include "gui-src/settloader.h"
+///[!] guisett-shared-core
+#include "src/nongui/settloader.h"
 
 
 ///[!] printer-shared

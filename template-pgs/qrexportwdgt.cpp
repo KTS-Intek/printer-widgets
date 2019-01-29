@@ -7,8 +7,8 @@
 #include "src/printer/qrcodegenerator.h"
 #include "src/printer/qrgenconverter.h"
 
-///[!] guisett-shared
-#include "gui-src/settloader.h"
+///[!] guisett-shared-core
+#include "src/nongui/settloader.h"
 
 
 QrExportWdgt::QrExportWdgt(LastDevInfo *lDevInfo, GuiHelper *gHelper, GuiSett4all *gSett4all, QWidget *parent) :

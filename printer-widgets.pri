@@ -15,7 +15,15 @@ INCLUDEPATH  += $$PWD\
                 $$PWD/../../defines/define-types
 
 include(../printer-shared/printer-shared.pri)
-include(../../../QrCode/qzxing-v2/src/QZXing.pri)
+#include(../../../QrCode/qzxing-v2/src/QZXing.pri)
+
+#for a static library
+INCLUDEPATH += $$PWD/../../libs/headers/qzxing/
+INCLUDEPATH += $$PWD/../../libs/headers/qzxing/zxing
+
+LIBS += -L$$PWD/../../libs/libs -lQZXing
+
+
 
 HEADERS += \
     $$PWD/src/printer/exportwdgt2qrcodegen.h \

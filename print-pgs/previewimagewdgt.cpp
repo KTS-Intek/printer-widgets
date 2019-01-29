@@ -8,8 +8,8 @@
 #include <QDebug>
 
 
-///[!] guisett-shared
-#include "gui-src/settloader.h"
+///[!] guisett-shared-core
+#include "src/nongui/settloader.h"
 
 
 PreviewImageWdgt::PreviewImageWdgt(const bool &hideRotationSett, QWidget *parent) :
