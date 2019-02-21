@@ -23,7 +23,7 @@ class PrintNiQrCodeWdgt : public ReferenceWidgetClass
     Q_OBJECT
 
 public:
-    explicit PrintNiQrCodeWdgt(LastDevInfo *lDevInfo, GuiHelper *gHelper, GuiSett4all *gSett4all, QWidget *parent = 0);
+    explicit PrintNiQrCodeWdgt(GuiHelper *gHelper, QWidget *parent = 0);
     ~PrintNiQrCodeWdgt();
     PrintImageHelper::PrintSettCache printSett;
     QrCodeGenSett lastQrGenSett;

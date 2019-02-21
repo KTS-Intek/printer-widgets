@@ -11,8 +11,8 @@
 #include "src/nongui/settloader.h"
 
 
-QrExportWdgt::QrExportWdgt(LastDevInfo *lDevInfo, GuiHelper *gHelper, GuiSett4all *gSett4all, QWidget *parent) :
-    MatildaConfWidget(lDevInfo, gHelper, gSett4all, parent),
+QrExportWdgt::QrExportWdgt(GuiHelper *gHelper, QWidget *parent) :
+    MatildaConfWidget(gHelper, parent),
     ui(new Ui::QrExportWdgt)
 {
     ui->setupUi(this);

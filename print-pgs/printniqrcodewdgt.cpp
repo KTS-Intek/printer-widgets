@@ -21,8 +21,8 @@
 
 #include "moji_defy.h"
 
-PrintNiQrCodeWdgt::PrintNiQrCodeWdgt(LastDevInfo *lDevInfo, GuiHelper *gHelper, GuiSett4all *gSett4all, QWidget *parent) :
-    ReferenceWidgetClass(lDevInfo, gHelper, gSett4all, parent),
+PrintNiQrCodeWdgt::PrintNiQrCodeWdgt(GuiHelper *gHelper, QWidget *parent) :
+    ReferenceWidgetClass(gHelper, parent),
     ui(new Ui::PrintNiQrCodeWdgt)
 {
     ui->setupUi(this);
@@ -211,7 +211,7 @@ void PrintNiQrCodeWdgt::restoreModelFromQrGenSett()
     if(lk.isEmpty())
         return;
 
-    StandardItemModelHelper::modelSetHorizontalHeaderItems(model, QrGenConverter::keys2human(lk));
+    StandardItemModelHelper::setModelHorizontalHeaderItems(model, QrGenConverter::keys2human(lk));
     int rowsAdd = 0;
     for(int i = 0, imax = lastQrGenSett.list.size(), cmax = lk.size(); i < imax; i++){
         const QrTableMap m = lastQrGenSett.list.at(i);

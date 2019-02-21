@@ -23,7 +23,7 @@ class UcPrintLabel : public MatildaConfWidget
     Q_OBJECT
 
 public:
-    explicit UcPrintLabel(LastDevInfo *lDevInfo, GuiHelper *gHelper, GuiSett4all *gSett4all, QWidget *parent = 0);
+    explicit UcPrintLabel(GuiHelper *gHelper, QWidget *parent = 0);
     ~UcPrintLabel();
 
     PrintImageHelper::PrintSettCache printSett;

@@ -22,8 +22,8 @@
 #include "moji_defy.h"
 
 
-UcPrintLabel::UcPrintLabel(LastDevInfo *lDevInfo, GuiHelper *gHelper, GuiSett4all *gSett4all, QWidget *parent) :
-    MatildaConfWidget(lDevInfo, gHelper, gSett4all, parent),
+UcPrintLabel::UcPrintLabel(GuiHelper *gHelper, QWidget *parent) :
+    MatildaConfWidget(gHelper, parent),
     ui(new Ui::UcPrintLabel)
 {
     ui->setupUi(this);
@@ -198,7 +198,7 @@ void UcPrintLabel::restoreModelFromQrGenSett()
 
 
 
-//    StandardItemModelHelper::modelSetHorizontalHeaderItems(model, QrGenConverter::keys2human(lk));
+//    StandardItemModelHelper::setModelHorizontalHeaderItems(model, QrGenConverter::keys2human(lk));
 //    int rowsAdd = 0;
 //    for(int i = 0, imax = lastQrGenSett.list.size(), cmax = lk.size(); i < imax; i++){
 //        const QrTableMap m = lastQrGenSett.list.at(i);

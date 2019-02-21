@@ -23,7 +23,7 @@ class QrExportWdgt : public MatildaConfWidget
     Q_OBJECT
 
 public:
-    explicit QrExportWdgt(LastDevInfo *lDevInfo, GuiHelper *gHelper, GuiSett4all *gSett4all, QWidget *parent = 0);
+    explicit QrExportWdgt(GuiHelper *gHelper, QWidget *parent = 0);
     ~QrExportWdgt();
     QrCodeGenSett lastQrGenSett;
     PrintImageHelper::PrintSettCache printSett;
