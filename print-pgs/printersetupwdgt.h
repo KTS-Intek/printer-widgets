@@ -17,12 +17,18 @@ class PrinterSetupWdgt : public QWidget
     Q_OBJECT
 
 public:
-    explicit PrinterSetupWdgt(QWidget *parent = 0);
+    explicit PrinterSetupWdgt(const QString &defaultimagepath, const bool &generateQrFoced, QWidget *parent = 0);
     ~PrinterSetupWdgt();
 
     QPixmap getPagePix();
 
     int getRotateDeg();
+
+    QString defaultimagepath;
+    bool generateQrFoced;
+
+    PrintImageHelper::PrintSettCache getPagePrintSett();
+
 
 signals:
     void stopTmrUpdate();
@@ -34,10 +40,14 @@ signals:
 
     void youCanCloseMe();
 
-    void setImage(QPixmap p, QVariantMap map, QString lblTxt);
+    void setReadyImage(QPixmap p, QString lblTxt);
 
 public slots:
     void loadThisSett(QVariantMap map);
+
+
+
+
 
 private slots:
     void initObjects();
@@ -46,13 +56,18 @@ private slots:
 
     void on_pbSave_clicked();
 
-    void on_pbUpdateHtml_clicked();
+    void onpbUpdateHtml_clicked();
 
     void on_pbPrint_clicked();
 
     void on_pushButton_clicked();
 
     void on_pbDefault_clicked();
+
+    void on_toolButton_clicked();
+
+
+    void on_groupBox_4_clicked();
 
 private:
     Ui::PrinterSetupWdgt *ui;

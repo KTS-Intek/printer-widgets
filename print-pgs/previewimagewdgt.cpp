@@ -66,8 +66,15 @@ void PreviewImageWdgt::updateImage()
     emit startTmrUpdateImg();
 }
 
+void PreviewImageWdgt::setReadyImage(QPixmap p, QString lblTxt)
+{
+    setImage(p, QVariantMap(), lblTxt);
+    lastWasAreadyImage = true;
+}
+
 void PreviewImageWdgt::setImage(QPixmap p, QVariantMap map, QString lblTxt)
 {
+    lastWasAreadyImage = false;
     lastLblTxt = lblTxt;
     lastPix = p;
     lastAbout = map;
@@ -88,6 +95,7 @@ void PreviewImageWdgt::setPrintSett(const PrintImageHelper::PrintSettCache &prin
 
 void PreviewImageWdgt::clearImage()
 {
+    lastWasAreadyImage = false;
     lastLblTxt.clear();
     lastPix = QPixmap(":/katynko/qrhi.png");
     lastAbout.clear();
@@ -102,7 +110,9 @@ void PreviewImageWdgt::updatePrintImage()
     }
 
 
-    QPixmap p = PrintImageHelper::getPixmapWithUserData(printSett.userData, printSett.dateMask, printSett.fontPpt, printSett.textTopMargin,
+    QPixmap p =  lastWasAreadyImage ?
+                lastPix :
+                PrintImageHelper::getPixmapWithUserData(printSett.userData, printSett.dateMask, printSett.fontPpt, printSett.textTopMargin,
                                                         printSett.textLeftMargin, lastAbout, printSett.textRotateDeg, lastPix);
 
 

@@ -41,7 +41,9 @@ QVariantMap PrintNiQrCodeWdgt::getThisDevPrinterSett() const
 void PrintNiQrCodeWdgt::initPage()
 {
 
-    setupObjects(ui->tableView, ui->tbFilter, ui->cbxFilter, ui->leFilter, SETT_FILTERS_QRPRINT_PWR);
+    setupObjects(ui->horizontalLayout_2, ui->tableView, ui->tbFilter, ui->cbxFilter, ui->leFilter, SETT_FILTERS_QRPRINT_PWR);
+    connect(this, SIGNAL(openContextMenu(QPoint)), this, SLOT(on_tableView_customContextMenuRequested(QPoint)));
+
     setupTbShowHide(ui->tbShowHide, ui->widget, false, false);
 
     connect(ui->pbCancel, SIGNAL(clicked(bool)), this, SLOT(deleteLater()) );
@@ -127,7 +129,7 @@ void PrintNiQrCodeWdgt::on_tableView_customContextMenuRequested(const QPoint &po
 
 void PrintNiQrCodeWdgt::on_pbSettings_clicked()
 {
-    PrinterSetupWdgt *w = new PrinterSetupWdgt(this);
+    PrinterSetupWdgt *w = new PrinterSetupWdgt("", true, this);
     connect(w, SIGNAL(youCanCloseMe())          , w, SLOT(deleteLater()) );
     connect(w, SIGNAL(settSaved(QVariantMap))   , this, SLOT(settSaved(QVariantMap)) );
     connect(w, SIGNAL(sendMeSett())             , this, SLOT(sendMeSett()) );
@@ -185,7 +187,7 @@ void PrintNiQrCodeWdgt::on_pbPrint_clicked()
     const QString mess = PrintImageHelper::printPixmaps(ui->cbxPrinter->currentIndex() < 1 ? "" : ui->cbxPrinter->currentText(), pdfFileName, ui->sbCopies->value(),
                                    printSett.resolutionDpi,
                                 PrintImageHelper::getPageSize(printSett.widthMM, printSett.heightMM, printSett.isPortrait), printSett.isPortrait,
-                                QMargins(printSett.left,printSett.top,printSett.right,printSett.bottom), lp);
+                                QMargins(printSett.left,printSett.top,0,0), lp);//  printSett.right,printSett.bottom), lp);
 
 
     if(!mess.isEmpty())

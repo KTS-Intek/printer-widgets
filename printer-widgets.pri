@@ -17,7 +17,7 @@ INCLUDEPATH  += $$PWD\
 include(../printer-shared/printer-shared.pri)
 #include(../../../QrCode/qzxing-v2/src/QZXing.pri)
 
-win32 {
+win32|android {
 include(../../../QrCode/qzxing-v3/src/QZXing.pri)
 }else{
 #for a static library
@@ -26,6 +26,7 @@ INCLUDEPATH += $$PWD/../../libs/headers/qzxing/zxing
 
 LIBS += -L$$PWD/../../libs/libs -lQZXing
 }
+
 
 HEADERS += \
     $$PWD/src/printer/exportwdgt2qrcodegen.h \

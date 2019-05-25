@@ -163,7 +163,7 @@ void UcPrintLabel::on_pbSave_clicked()
 
 void UcPrintLabel::on_pbSettings_clicked()
 {
-    PrinterSetupWdgt *w = new PrinterSetupWdgt(this);
+    PrinterSetupWdgt *w = new PrinterSetupWdgt("", false, this);
     connect(w, SIGNAL(youCanCloseMe())          , w, SLOT(deleteLater()) );
     connect(w, SIGNAL(settSaved(QVariantMap))   , this, SLOT(settSaved(QVariantMap)) );
     connect(w, SIGNAL(sendMeSett())             , this, SLOT(sendMeSett()) );

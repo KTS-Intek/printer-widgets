@@ -14,14 +14,22 @@
 #include <QDebug>
 #include <QShortcut>
 
+#include <QFileDialog>
+
 ///[!] printer-shared
 #include "src/printer/printimagehelper.h"
 #include "src/printer/qrcodegenerator.h"
 
+///[!] guisett-shared-core
+#include "src/nongui/settloader.h"
+
+
 #define QR_TEXT_MESSAGE "Hi,\nHow are you?"
 
-PrinterSetupWdgt::PrinterSetupWdgt(QWidget *parent) :
-    QWidget(parent),
+//----------------------------------------------------------
+
+PrinterSetupWdgt::PrinterSetupWdgt(const QString &defaultimagepath, const bool &generateQrFoced, QWidget *parent) :
+    QWidget(parent), defaultimagepath(defaultimagepath), generateQrFoced(generateQrFoced),
     ui(new Ui::PrinterSetupWdgt)
 {
     ui->setupUi(this);
@@ -29,16 +37,36 @@ PrinterSetupWdgt::PrinterSetupWdgt(QWidget *parent) :
     initObjects();
 }
 
+//----------------------------------------------------------
+
 PrinterSetupWdgt::~PrinterSetupWdgt()
 {
     delete ui;
 }
 
+//----------------------------------------------------------
+
 QPixmap PrinterSetupWdgt::getPagePix()
 {
-    return QrCodeGenerator::getPagePix(ui->sbWidth->value(), ui->sbHeight->value(), ui->sbxResolDpi->value(), ui->cbxQrCodeCorrLevel->currentText(), QR_TEXT_MESSAGE);
+
+    QPixmap qr;
+    PrintImageHelper::PrintSettCache printSett = previewOptions->printSett;
+    if(printSett.genearateaqrcode){
+
+        qr = printSett.enqrcustomposition ?
+                    QrCodeGenerator::encode(QR_TEXT_MESSAGE, printSett.qrCorrLetter, printSett.qrwidthpx, printSett.qrheightpx) :
+                    QrCodeGenerator::getPagePix(printSett, QR_TEXT_MESSAGE);
+    }
+
+    QPixmap p = PrintImageHelper::getPixmapWithUserDataExt(previewOptions->printSett, "1234567890abcdef routerni MYDEV", "$eui64 $ni $model", " ", qr);
+//    const QVariantMap map = PrintImageHelper::getMapAboutDev(ui->leEUI64->text().simplified().trimmed(), "$eui64 $ni", " ");
+
+
+    return p;// QrCodeGenerator::getPagePix(ui->sbWidth->value(), ui->sbHeight->value(), ui->sbxResolDpi->value(), ui->cbxQrCodeCorrLevel->currentText(), QR_TEXT_MESSAGE);
 
 }
+
+//----------------------------------------------------------
 
 int PrinterSetupWdgt::getRotateDeg()
 {
@@ -52,51 +80,113 @@ int PrinterSetupWdgt::getRotateDeg()
     return rotateDeg;
 }
 
+//----------------------------------------------------------
+
+PrintImageHelper::PrintSettCache PrinterSetupWdgt::getPagePrintSett()
+{
+    PrintImageHelper::PrintSettCache printSett;// = getPagePrintSett();
+//Page
+    printSett.widthMM               = ui->sbWidth->value();
+    printSett.heightMM              = ui->sbHeight->value();
+    printSett.top                   = ui->sbMargTop->value();
+    printSett.left                  = ui->sbMargL->value();
+    printSett.isPortrait            = ui->rbPortrait->isChecked();
+    printSett.resolutionDpi         = ui->sbxResolDpi->value();
+    printSett.genearateaqrcode      = ui->cbxGenerateAqr->isChecked();
+
+
+    //Template
+    //Image
+    printSett.rotateDeg             = getRotateDeg();
+    printSett.colorIndx             = ui->cbxImgColor->currentIndex();
+    printSett.formatIndx            = ui->cbxImgFormat->currentIndex();
+    printSett.contrast              = ui->sbContrast->value();
+    printSett.brightness            = ui->sbBrightness->value();
+    printSett.backgroundimagepath   = ui->lePath2imgBackGround->text();
+    printSett.defaultimagepath      = defaultimagepath;// "";
+    printSett.usedefaultimage       = ui->cbxBackGround->isChecked();
+
+//text
+    printSett.dateMask              = ui->cbxDateMask->currentText();
+    printSett.textRotateDeg         = ui->sbRotateText->value();
+    printSett.fontPpt               = ui->sbImgFontSize->value();
+    printSett.textTopMargin         = ui->sbTextTopMargin->value();
+    printSett.textLeftMargin        = ui->sbTextLeftMargin->value();
+    printSett.userData              = ui->pteUserField->toPlainText();
+
+//Qr Code
+    printSett.qrCorrLetter          = ui->cbxQrCodeCorrLevel->currentText();
+    printSett.enqrcustomposition    = ui->groupBox_4->isChecked();
+    printSett.qrtopmarginpx         = ui->sbQrTopMargin->value();
+    printSett.qrleftmarginpx        = ui->sbQrLeftMargin->value();
+    printSett.qrheightpx            = ui->sbQrHeight->value();
+    printSett.qrwidthpx             = ui->sbQrHeight->value();//A QR code is a square
+
+
+
+
+//    QString path2img;
+
+
+
+    return printSett;
+}
+
+//----------------------------------------------------------
+
 void PrinterSetupWdgt::loadThisSett(QVariantMap map)
 {
     PrintImageHelper::PrintSettCache printSett = PrintImageHelper::variantMap2printSett(map);
+    //page
+    ui->sbWidth->setValue(              printSett.widthMM               );
+    ui->sbHeight->setValue(             printSett.heightMM              );
+    ui->sbMargTop->setValue(            printSett.top                   );
+    ui->sbMargL->setValue(              printSett.left                  );
+    ui->rbPortrait->setChecked(         printSett.isPortrait            );
+    ui->rbLandscape->setChecked(        !ui->rbPortrait->isChecked()    );
+    ui->sbxResolDpi->setValue(          printSett.resolutionDpi         );
 
-    ui->sbWidth->setValue(printSett.widthMM);
-    ui->sbHeight->setValue(printSett.heightMM);
-    ui->sbMargTop->setValue(printSett.top);
-    ui->sbMargR->setValue(printSett.right);
-    ui->sbMargB->setValue(printSett.bottom);
-    ui->sbMargL->setValue(printSett.left);
+    if(ui->cbxGenerateAqr->isEnabled())
+        ui->cbxGenerateAqr->setChecked(     printSett.genearateaqrcode      );
 
-    ui->rbPortrait->setChecked(printSett.isPortrait);
-    ui->rbLandscape->setChecked(!ui->rbPortrait->isChecked());
-
-    ui->sbxResolDpi->setValue(printSett.resolutionDpi);
-
-    ui->pteUserField->setPlainText(printSett.userData);
-    ui->sbImgFontSize->setValue(printSett.fontPpt);
-    ui->sbTextTopMargin->setValue(printSett.textTopMargin);
-    ui->sbTextLeftMargin->setValue(printSett.textLeftMargin);
-
-    ui->sbBrightness->setValue(printSett.brightness);
-    ui->sbContrast->setValue(printSett.contrast);
-
+    //Template
     switch(printSett.rotateDeg){
     case 90: ui->rbRotate90->setChecked(true); break;
     case 180: ui->rbRotate180->setChecked(true); break;
     case 270: ui->rbRotate270->setChecked(true); break;
     default: ui->rbNoRotation->setChecked(true); break;
     }
+    ui->cbxImgColor->setCurrentIndex(   printSett.colorIndx             );
+    ui->cbxImgFormat->setCurrentIndex(  printSett.formatIndx            );
+    ui->sbContrast->setValue(           printSett.contrast              );
+    ui->sbBrightness->setValue(         printSett.brightness            );
+    ui->lePath2imgBackGround->setText(  printSett.backgroundimagepath   );
+    ui->cbxBackGround->setChecked(      printSett.usedefaultimage       );
 
-    ui->cbxImgFormat->setCurrentIndex(printSett.formatIndx);
+    //text
+    ui->cbxDateMask->setCurrentIndex(   qMax(0, ui->cbxDateMask->findText(printSett.dateMask)));
+    ui->sbRotateText->setValue(         printSett.textRotateDeg         );
+    ui->sbImgFontSize->setValue(        printSett.fontPpt               );
+    ui->sbTextTopMargin->setValue(      printSett.textTopMargin         );
+    ui->sbTextLeftMargin->setValue(     printSett.textLeftMargin        );
+    ui->pteUserField->setPlainText(     printSett.userData              );
 
-    ui->cbxImgColor->setCurrentIndex(printSett.colorIndx);
-
-    ui->cbxDateMask->setCurrentIndex(qMax(0, ui->cbxDateMask->findText(printSett.dateMask)));
-
-    ui->sbRotateText->setValue(printSett.textRotateDeg);
+    //Qr Code
     ui->cbxQrCodeCorrLevel->setCurrentIndex(qMax(0, ui->cbxQrCodeCorrLevel->findText(printSett.qrCorrLetter)));
+    ui->groupBox_4->setChecked(         printSett.enqrcustomposition    );
+    ui->sbQrTopMargin->setValue(        printSett.qrtopmarginpx         );
+    ui->sbQrLeftMargin->setValue(       printSett.qrleftmarginpx        );
+    ui->sbQrHeight->setValue(           printSett.qrheightpx            );
+    ui->sbQrWidth->setValue(            printSett.qrheightpx             );//QR has a square form
 }
+
+
+//----------------------------------------------------------
 
 void PrinterSetupWdgt::initObjects()
 {
     previewOptions = new PreviewImageWdgt(true, this);
-    connect(this, SIGNAL(setImage(QPixmap,QVariantMap,QString)), previewOptions, SLOT(setImage(QPixmap,QVariantMap,QString)) );
+    connect(this, SIGNAL(setReadyImage(QPixmap,QString)), previewOptions, SLOT(setReadyImage(QPixmap,QString)) );
     ui->vl4preview->addWidget(previewOptions);
 
     ui->tabWidget->setCurrentIndex(0);
@@ -106,50 +196,76 @@ void PrinterSetupWdgt::initObjects()
     ui->cbxDateMask->addItems(PrintImageHelper::getSupportedDateMask());
 
     ui->pbReload->animateClick();
-    connect(ui->sbTextLeftMargin, SIGNAL(editingFinished()), this, SLOT(on_pbUpdateHtml_clicked()) );
-    connect(ui->sbTextTopMargin , SIGNAL(editingFinished()), this, SLOT(on_pbUpdateHtml_clicked()) );
-    connect(ui->sbImgFontSize   , SIGNAL(editingFinished()), this, SLOT(on_pbUpdateHtml_clicked()) );
+    connect(ui->sbTextLeftMargin, SIGNAL(editingFinished()), this, SLOT(onpbUpdateHtml_clicked()) );
+    connect(ui->sbTextTopMargin , SIGNAL(editingFinished()), this, SLOT(onpbUpdateHtml_clicked()) );
+    connect(ui->sbImgFontSize   , SIGNAL(editingFinished()), this, SLOT(onpbUpdateHtml_clicked()) );
 
     QTimer *t = new QTimer(this);
     t->setSingleShot(true);
     t->setInterval(222);
-    connect(t, SIGNAL(timeout()), this, SLOT(on_pbUpdateHtml_clicked()) );
+    connect(t, SIGNAL(timeout()), this, SLOT(onpbUpdateHtml_clicked()) );
     connect(this, SIGNAL(stopTmrUpdate()), t, SLOT(stop()) );
 
+    ui->cbxQrCodeCorrLevel->addItems(QrCodeGenerator::getCorrection());
 
+    if(generateQrFoced){
+        ui->cbxGenerateAqr->setEnabled(false);
+        ui->cbxGenerateAqr->setChecked(true);
+    }
+//Page
+    connect(ui->sbWidth             , SIGNAL(valueChanged(int))         , t, SLOT(start()));
+    connect(ui->sbHeight            , SIGNAL(valueChanged(int))         , t, SLOT(start()));
+    connect(ui->sbxResolDpi         , SIGNAL(valueChanged(int))         , t, SLOT(start()));
+    connect(ui->rbLandscape         , SIGNAL(clicked(bool))             , t, SLOT(start()));
+    connect(ui->rbPortrait          , SIGNAL(clicked(bool))             , t, SLOT(start()));
+    connect(ui->sbMargL             , SIGNAL(valueChanged(int))         , t, SLOT(start()));
+    connect(ui->sbMargTop           , SIGNAL(valueChanged(int))         , t, SLOT(start()));
+    connect(ui->cbxGenerateAqr      , SIGNAL(clicked(bool))             , t, SLOT(start()) );
 
-    connect(ui->sbTextLeftMargin, SIGNAL(valueChanged(int)), t, SLOT(start()) );
-    connect(ui->sbTextTopMargin , SIGNAL(valueChanged(int)), t, SLOT(start()) );
-    connect(ui->sbImgFontSize   , SIGNAL(valueChanged(int)), t, SLOT(start()) );
-    connect(ui->sbRotateText    , SIGNAL(valueChanged(int)), t, SLOT(start()) );
+    //Template
+    //Image
+    connect(ui->rbNoRotation        , SIGNAL(clicked(bool))             , t, SLOT(start()) );
+    connect(ui->rbRotate90          , SIGNAL(clicked(bool))             , t, SLOT(start()) );
+    connect(ui->rbRotate180         , SIGNAL(clicked(bool))             , t, SLOT(start()) );
+    connect(ui->rbRotate270         , SIGNAL(clicked(bool))             , t, SLOT(start()) );
+    connect(ui->cbxImgColor         , SIGNAL(currentIndexChanged(int))  , t, SLOT(start()) );
+    connect(ui->cbxImgFormat        , SIGNAL(currentIndexChanged(int))  , t, SLOT(start()) );
+    connect(ui->sbContrast          , SIGNAL(valueChanged(int))         , t, SLOT(start()) );
+    connect(ui->sbBrightness        , SIGNAL(valueChanged(int))         , t, SLOT(start()) );
+    connect(ui->lePath2imgBackGround, SIGNAL(textChanged(QString))      , t, SLOT(start()));
+    connect(ui->cbxBackGround       , SIGNAL(clicked(bool))             , t, SLOT(start()));
 
-    connect(ui->cbxDateMask     , SIGNAL(currentIndexChanged(int)), t, SLOT(start()) );
+    //Text
+    connect(ui->cbxDateMask         , SIGNAL(currentIndexChanged(int))  , t, SLOT(start()) );
+    connect(ui->sbRotateText        , SIGNAL(valueChanged(int))         , t, SLOT(start()) );
+    connect(ui->sbImgFontSize       , SIGNAL(valueChanged(int))         , t, SLOT(start()) );
+    connect(ui->sbTextLeftMargin    , SIGNAL(valueChanged(int))         , t, SLOT(start()) );
+    connect(ui->sbTextTopMargin     , SIGNAL(valueChanged(int))         , t, SLOT(start()) );
+    connect(ui->pteUserField        , SIGNAL(textChanged())             , t, SLOT(start()) );
 
-    connect(ui->pteUserField, SIGNAL(textChanged()), t, SLOT(start()) );
-    connect(ui->rbNoRotation, SIGNAL(clicked(bool)), t, SLOT(start()) );
-    connect(ui->rbRotate90  , SIGNAL(clicked(bool)), t, SLOT(start()) );
-    connect(ui->rbRotate180 , SIGNAL(clicked(bool)), t, SLOT(start()) );
-    connect(ui->rbRotate270 , SIGNAL(clicked(bool)), t, SLOT(start()) );
-
-    connect(ui->cbxImgColor , SIGNAL(currentIndexChanged(int)), t, SLOT(start()) );
-    connect(ui->cbxImgFormat, SIGNAL(currentIndexChanged(int)), t, SLOT(start()) );
+//QR Code
+    connect(ui->cbxQrCodeCorrLevel  , SIGNAL(currentIndexChanged(int))  , t, SLOT(start()));
+    connect(ui->groupBox_4          , SIGNAL(clicked(bool))             , t, SLOT(start()));
+    connect(ui->sbQrTopMargin       , SIGNAL(valueChanged(int))         , t, SLOT(start()));
+    connect(ui->sbQrLeftMargin      , SIGNAL(valueChanged(int))         , t, SLOT(start()));
+    connect(ui->sbQrHeight          , SIGNAL(valueChanged(int))         , t, SLOT(start()));
+//    connect(ui->sbQrWidth           , SIGNAL(valueChanged(int))         , t, SLOT(start()));
 
     connect(ui->tabWidget   , SIGNAL(currentChanged(int)), t, SLOT(start()) );
 
-
-
-    connect(ui->sbContrast  , SIGNAL(valueChanged(int)), t, SLOT(start()) );
-    connect(ui->sbBrightness, SIGNAL(valueChanged(int)), t, SLOT(start()) );
 
     connect(ui->sbRotateText, SIGNAL(valueChanged(int)), ui->hsRotateText, SLOT(setValue(int)) );
     connect(ui->hsRotateText, SIGNAL(valueChanged(int)), ui->sbRotateText, SLOT(setValue(int)) );
 
     connect(ui->pbCancel    , SIGNAL(clicked(bool)), this, SIGNAL(youCanCloseMe()));
 
+    connect(ui->sbQrHeight, SIGNAL(valueChanged(int)), ui->sbQrWidth, SLOT(setValue(int)));
+    ui->sbQrWidth->setValue(ui->sbQrHeight->value());
 
-    ui->cbxQrCodeCorrLevel->addItems(QrCodeGenerator::getCorrection());
 
 }
+
+//----------------------------------------------------------
 
 void PrinterSetupWdgt::on_pbReload_clicked()
 {
@@ -157,64 +273,26 @@ void PrinterSetupWdgt::on_pbReload_clicked()
 
 }
 
+//----------------------------------------------------------
+
 void PrinterSetupWdgt::on_pbSave_clicked()
 {
-    PrintImageHelper::PrintSettCache printSett;
+    const PrintImageHelper::PrintSettCache printSett = getPagePrintSett();
 
-    printSett.widthMM = ui->sbWidth->value();
-    printSett.heightMM = ui->sbHeight->value();
-
-    printSett.top = ui->sbMargTop->value();
-    printSett.right = ui->sbMargR->value();
-    printSett.bottom = ui->sbMargB->value();
-    printSett.left= ui->sbMargL->value();
-
-    printSett.isPortrait = ui->rbPortrait->isChecked();
-    printSett.resolutionDpi = ui->sbxResolDpi->value();
-
-    printSett.userData = ui->pteUserField->toPlainText();
-    printSett.fontPpt = ui->sbImgFontSize->value();
-    printSett.textTopMargin = ui->sbTextTopMargin->value();
-    printSett.textLeftMargin = ui->sbTextLeftMargin->value();
-    printSett.dateMask = ui->cbxDateMask->currentIndex();
-
-    printSett.rotateDeg = getRotateDeg();
-
-    printSett.formatIndx = ui->cbxImgFormat->currentIndex();
-    printSett.colorIndx = ui->cbxImgColor->currentIndex();
-
-
-    printSett.brightness = ui->sbBrightness->value();
-    printSett.contrast = ui->sbContrast->value();
-    printSett.textRotateDeg = ui->sbRotateText->value();
-    printSett.qrCorrLetter = ui->cbxQrCodeCorrLevel->currentText();
 
     emit settSaved(PrintImageHelper::printSett2variantMap(printSett));
     emit youCanCloseMe();
 }
 
-void PrinterSetupWdgt::on_pbUpdateHtml_clicked()
+//----------------------------------------------------------
+
+void PrinterSetupWdgt::onpbUpdateHtml_clicked()
 {
-    QVariantMap map;
-    map.insert("$model", "my_model");
-    map.insert("$ni", "89abcdef");
-    map.insert("$eui64", "0123456789abcdef");
-
-
-    previewOptions->printSett.userData          = ui->pteUserField->toPlainText();
-    previewOptions->printSett.dateMask          = ui->cbxDateMask->currentText();
-    previewOptions->printSett.fontPpt           = ui->sbImgFontSize->value();
-    previewOptions->printSett.textTopMargin     = ui->sbTextTopMargin->value();
-    previewOptions->printSett.textLeftMargin    = ui->sbTextLeftMargin->value();
-    previewOptions->printSett.textRotateDeg     = ui->sbRotateText->value();
-    previewOptions->printSett.formatIndx        = ui->cbxImgFormat->currentIndex();
-    previewOptions->printSett.colorIndx         = ui->cbxImgColor->currentIndex();
-    previewOptions->printSett.rotateDeg         =  getRotateDeg();//ui->cbxIgnoreRotation->isChecked() ? 0 :
-    previewOptions->printSett.contrast          = ui->sbContrast->value();
-    previewOptions->printSett.brightness        = ui->sbBrightness->value();
-
-    emit setImage(getPagePix(), map, QR_TEXT_MESSAGE);//00 0D 6F 00  00 7A 8E 23
+    previewOptions->printSett = getPagePrintSett();
+    emit setReadyImage(getPagePix(), QR_TEXT_MESSAGE);//00 0D 6F 00  00 7A 8E 23
 }
+
+//----------------------------------------------------------
 
 void PrinterSetupWdgt::on_pbPrint_clicked()
 {
@@ -224,7 +302,7 @@ void PrinterSetupWdgt::on_pbPrint_clicked()
     printer.setPageSize(QPageSize(PrintImageHelper::getPageSize(ui->sbWidth->value(), ui->sbHeight->value(), ui->rbPortrait->isChecked()), QPageSize::Millimeter));
     printer.setOrientation( ui->rbPortrait->isChecked() ? QPrinter::Portrait : QPrinter::Landscape);
     printer.setPageOrientation(ui->rbPortrait->isChecked() ? QPageLayout::Portrait : QPageLayout::Landscape);
-    printer.setPageMargins(QMargins(ui->sbMargL->value(), ui->sbMargTop->value(), ui->sbMargR->value(), ui->sbMargB->value()));
+    printer.setPageMargins(QMargins(ui->sbMargL->value(), ui->sbMargTop->value(), 0, 0));// ui->sbMargR->value(), ui->sbMargB->value()));
     printer.setFullPage(true);
 
     QPrintDialog *d = new QPrintDialog(&printer, this);
@@ -232,7 +310,7 @@ void PrinterSetupWdgt::on_pbPrint_clicked()
         d->printer()->setFullPage(true);
         printer.setResolution(ui->sbxResolDpi->value());
         printer.setPageSize(QPageSize(PrintImageHelper::getPageSize(ui->sbWidth->value(), ui->sbHeight->value(), ui->rbPortrait->isChecked()), QPageSize::Millimeter));
-        printer.setPageMargins(QMargins(ui->sbMargL->value(), ui->sbMargTop->value(), ui->sbMargR->value(), ui->sbMargB->value()));
+        printer.setPageMargins(QMargins(ui->sbMargL->value(), ui->sbMargTop->value(), 0, 0));// ui->sbMargR->value(), ui->sbMargB->value()));
 
         printer.setOrientation( ui->rbPortrait->isChecked() ? QPrinter::Portrait : QPrinter::Landscape);
         printer.setPageOrientation(ui->rbPortrait->isChecked() ? QPageLayout::Portrait : QPageLayout::Landscape);
@@ -258,6 +336,8 @@ void PrinterSetupWdgt::on_pbPrint_clicked()
     d->deleteLater();
 }
 
+//----------------------------------------------------------
+
 void PrinterSetupWdgt::on_pushButton_clicked()
 {
 
@@ -270,7 +350,7 @@ void PrinterSetupWdgt::on_pushButton_clicked()
     QPrinter printer(QPrinter::HighResolution);
     printer.setFullPage(true);
     printer.setPageSize(QPageSize(PrintImageHelper::getPageSize(ui->sbWidth->value(), ui->sbHeight->value(), ui->rbPortrait->isChecked()), QPageSize::Millimeter));
-    printer.setPageMargins(QMargins(ui->sbMargL->value(), ui->sbMargTop->value(), ui->sbMargR->value(), ui->sbMargB->value()));
+    printer.setPageMargins(QMargins(ui->sbMargL->value(), ui->sbMargTop->value(), 0, 0));// ui->sbMargR->value(), ui->sbMargB->value()));
 
     printer.setResolution(ui->sbxResolDpi->value());
     printer.setOrientation( ui->rbPortrait->isChecked() ? QPrinter::Portrait : QPrinter::Landscape);
@@ -304,7 +384,47 @@ void PrinterSetupWdgt::on_pushButton_clicked()
 #endif
 }
 
+//----------------------------------------------------------
+
 void PrinterSetupWdgt::on_pbDefault_clicked()
 {
     loadThisSett(PrintImageHelper::printSett2variantMap(PrintImageHelper::defaultPrintSett()));
+}
+
+//----------------------------------------------------------
+
+void PrinterSetupWdgt::on_toolButton_clicked()
+{
+    //    tryToImportFile(QFileDialog::getOpenFileName(this, tr("Open a file"),  SettLoader::getValidLastDir(), tr("Plain text(*.txt);;All files (*)")), false);
+
+    QStringList l;
+    l.append(tr("PNG image(*.png)"));
+    l.append(tr("JPG image(*.jpg *.jpeg)"));
+    l.append(tr("BMP image(*.bmp)"));
+    l.append(tr("PPM image(*.ppm)"));
+    l.append(tr("XBM image(*.xbm)"));
+    l.append(tr("XPM image(*.xpm)"));
+
+    QFileInfo fi(ui->lePath2imgBackGround->text());
+
+    const QString path2dir =  ui->lePath2imgBackGround->text().isEmpty() ?
+                SettLoader::getValidLastDir() :
+                fi.absoluteDir().absolutePath();
+
+    const QString filename = QFileDialog::getOpenFileName(this, tr("Get a background image"),path2dir, l.join(";;"));
+
+    if(filename.isEmpty())
+        return;
+
+
+    ui->lePath2imgBackGround->setText(filename);
+
+//                                 QStandardPaths::writableLocation(QStandardPaths::HomeLocation),  tr("PNG Images (*.png);;All files (*)"))
+}
+
+//----------------------------------------------------------
+
+void PrinterSetupWdgt::on_groupBox_4_clicked()
+{
+//    ui->groupBox_4->setChecked(!ui->groupBox_4->isChecked());
 }

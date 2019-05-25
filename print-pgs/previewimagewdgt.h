@@ -40,6 +40,8 @@ public slots:
 
     void updateImage();
 
+    void setReadyImage(QPixmap p, QString lblTxt);
+
     void setImage(QPixmap p, QVariantMap map, QString lblTxt);
 
     void setImageData(QVariantMap map);
@@ -73,6 +75,7 @@ private:
 
     bool isControlPressed;
 
+    bool lastWasAreadyImage;
 };
 
 #endif // PREVIEWIMAGEWDGT_H
