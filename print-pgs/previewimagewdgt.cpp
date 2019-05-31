@@ -183,7 +183,7 @@ void PreviewImageWdgt::on_tbSaveAs_clicked()
 
         const bool r = lastPixTxt.save(fileNam);
         QMessageBox::information(this, tr("Image"), r ? tr("Done)") :
-                                                        tr("Can't save the image"));
+                                                        tr("Couldn't save the image"));
 
         qDebug() << "export to file " << fileNam << r;
     }
