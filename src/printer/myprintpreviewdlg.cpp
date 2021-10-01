@@ -7,6 +7,7 @@ MyPrintPreviewDlg::MyPrintPreviewDlg(QPrinter *printer, QWidget *parent) : QPrin
 
 void MyPrintPreviewDlg::onPaintRequest(QPrinter *printer)
 {
+    lastprintername = printer->printerName();
     document.print(printer);
 
 }

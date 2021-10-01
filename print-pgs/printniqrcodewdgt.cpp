@@ -123,7 +123,7 @@ void PrintNiQrCodeWdgt::createCloseShortCut()
 
 void PrintNiQrCodeWdgt::on_tableView_customContextMenuRequested(const QPoint &pos)
 {        
-    gHelper->createCustomMenu(pos, ui->tableView, GuiHelper::ShowOnlyCopy|GuiHelper::ShowExport|GuiHelper::ShowReset, CLBRD_QR_PRINT, windowTitle());
+////    gHelper->createCustomMenu(pos, ui->tableView, GuiHelper::ShowOnlyCopy|GuiHelper::ShowExport|GuiHelper::ShowReset, CLBRD_QR_PRINT, windowTitle());
 
 }
 
@@ -170,7 +170,7 @@ void PrintNiQrCodeWdgt::on_pbPrint_clicked()
     }
 
     if(lp.isEmpty()){
-        emit showMess(tr("Nothing to print"));
+        emit showMessage(tr("Nothing to print"));
         return;
     }
 
@@ -184,14 +184,14 @@ void PrintNiQrCodeWdgt::on_pbPrint_clicked()
             filename.append(".pdf");
         pdfFileName = filename;
     }
-    const QString mess = PrintImageHelper::printPixmaps(ui->cbxPrinter->currentIndex() < 1 ? "" : ui->cbxPrinter->currentText(), pdfFileName, ui->sbCopies->value(),
+    const QString messageStrr = PrintImageHelper::printPixmaps(ui->cbxPrinter->currentIndex() < 1 ? "" : ui->cbxPrinter->currentText(), pdfFileName, ui->sbCopies->value(),
                                    printSett.resolutionDpi,
                                 PrintImageHelper::getPageSize(printSett.widthMM, printSett.heightMM, printSett.isPortrait), printSett.isPortrait,
                                 QMargins(printSett.left,printSett.top,0,0), lp);//  printSett.right,printSett.bottom), lp);
 
 
-    if(!mess.isEmpty())
-        emit showMess(mess);
+    if(!messageStrr.isEmpty())
+        emit showMessage(messageStrr);
 
 
 

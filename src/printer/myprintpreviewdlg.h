@@ -11,6 +11,7 @@ class MyPrintPreviewDlg : public QPrintPreviewDialog
 public:
     explicit MyPrintPreviewDlg(QPrinter *printer, QWidget *parent = nullptr);
 
+    QString lastprintername;
     QTextDocument document;
 
 signals:

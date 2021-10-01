@@ -35,7 +35,7 @@ void PrinterHelper::onUpdateAvPrinters(QString lastPrinterName)
         lastPrinterName = QPrinterInfo::defaultPrinterName();
 
     QStringList l = QPrinterInfo::availablePrinterNames();
-    int indx = l.indexOf(lastPrinterName);
+    int indx = l.indexOf(lastPrinterName) + 1;
     if(indx < 0 && !l.isEmpty())
         indx = 0;
     l.prepend(tr("Print to PDF"));
