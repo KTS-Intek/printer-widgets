@@ -44,7 +44,7 @@ void UcPrintLabel::initPage()
 {
     connect(ui->pbCancel, SIGNAL(clicked(bool)), this, SLOT(deleteLater()) );
 
-    previewMain = new PreviewImageWdgt(false, this);
+    previewMain = new PreviewImageWdgt(false, gHelper->verboseMode, this);
     connect(this, SIGNAL(setMainImage(QPixmap,QVariantMap,QString)), previewMain, SLOT(setImage(QPixmap,QVariantMap,QString)));
     connect(this, SIGNAL(clearMainImage()), previewMain, SLOT(clearImage()) );
     ui->vl4previewMain->addWidget(previewMain);
@@ -163,7 +163,7 @@ void UcPrintLabel::on_pbSave_clicked()
 
 void UcPrintLabel::on_pbSettings_clicked()
 {
-    PrinterSetupWdgt *w = new PrinterSetupWdgt("", false, this);
+    PrinterSetupWdgt *w = new PrinterSetupWdgt("", false, gHelper->verboseMode, this);
     connect(w, SIGNAL(youCanCloseMe())          , w, SLOT(deleteLater()) );
     connect(w, SIGNAL(settSaved(QVariantMap))   , this, SLOT(settSaved(QVariantMap)) );
     connect(w, SIGNAL(sendMeSett())             , this, SLOT(sendMeSett()) );

@@ -17,7 +17,7 @@ class PrinterSetupWdgt : public QWidget
     Q_OBJECT
 
 public:
-    explicit PrinterSetupWdgt(const QString &defaultimagepath, const bool &generateQrFoced, QWidget *parent = 0);
+    explicit PrinterSetupWdgt(const QString &defaultimagepath, const bool &generateQrFoced, const bool &verboseMode, QWidget *parent = 0);
     ~PrinterSetupWdgt();
 
     QPixmap getPagePix();
@@ -26,6 +26,7 @@ public:
 
     QString defaultimagepath;
     bool generateQrFoced;
+    bool verboseMode;
 
     PrintImageHelper::PrintSettCache getPagePrintSett();
 

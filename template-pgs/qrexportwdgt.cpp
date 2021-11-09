@@ -43,7 +43,7 @@ void QrExportWdgt::initPage()
     QShortcut *s = new QShortcut(QKeySequence(Qt::Key_Escape), this);
     connect(s, SIGNAL(activated()), this, SLOT(deleteLater())) ;
 
-    previewMain = new PreviewImageWdgt(false, this);
+    previewMain = new PreviewImageWdgt(false, gHelper->verboseMode, this);
     connect(this, SIGNAL(setMainImage(QPixmap,QVariantMap,QString)), previewMain, SLOT(setImage(QPixmap,QVariantMap,QString)));
     connect(this, SIGNAL(clearMainImage()), previewMain, SLOT(clearImage()) );
     ui->vl4wdgt->addWidget(previewMain);
@@ -104,7 +104,8 @@ void QrExportWdgt::showThisItem(int pos)
     lastPosition = pos;
     const QString s = qCompress(list2print.at(pos).toUtf8(), 9).toBase64(QByteArray::OmitTrailingEquals);
 
-    qDebug() << "len " << s.length() << list2print.at(pos).toUtf8().length();
+    if(gHelper->verboseMode)
+        qDebug() << "len " << s.length() << list2print.at(pos).toUtf8().length();
 
     ui->lblPosition->setText(QString("%1/%2").arg(lastPosition + 1).arg(lastSize));
     ui->plainTextEdit->setPlainText(s);

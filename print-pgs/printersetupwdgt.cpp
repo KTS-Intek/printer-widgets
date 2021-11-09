@@ -28,8 +28,8 @@
 
 //----------------------------------------------------------
 
-PrinterSetupWdgt::PrinterSetupWdgt(const QString &defaultimagepath, const bool &generateQrFoced, QWidget *parent) :
-    QWidget(parent), defaultimagepath(defaultimagepath), generateQrFoced(generateQrFoced),
+PrinterSetupWdgt::PrinterSetupWdgt(const QString &defaultimagepath, const bool &generateQrFoced, const bool &verboseMode, QWidget *parent) :
+    QWidget(parent), defaultimagepath(defaultimagepath), generateQrFoced(generateQrFoced), verboseMode(verboseMode),
     ui(new Ui::PrinterSetupWdgt)
 {
     ui->setupUi(this);
@@ -317,8 +317,10 @@ void PrinterSetupWdgt::on_pbPrint_clicked()
 
 //        if(ui->cbxImgColor->currentIndex() == 2)
 //            printer.setColorMode(QPrinter::GrayScale);
-        qDebug() << "marginB " << printer.margins().left << printer.margins().top;
-        qDebug() << "sizeB" << printer.pageSizeMM() << printer.pageSize();
+        if(verboseMode){
+            qDebug() << "marginB " << printer.margins().left << printer.margins().top;
+            qDebug() << "sizeB" << printer.pageSizeMM() << printer.pageSize();
+        }
 
         QPainter painter;
 

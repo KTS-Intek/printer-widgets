@@ -12,12 +12,13 @@
 #include "src/nongui/settloader.h"
 
 
-PreviewImageWdgt::PreviewImageWdgt(const bool &hideRotationSett, QWidget *parent) :
+PreviewImageWdgt::PreviewImageWdgt(const bool &hideRotationSett, const bool &verboseMode, QWidget *parent) :
     QWidget(parent),
     ui(new Ui::PreviewImageWdgt)
 {
     ui->setupUi(this);
 
+    this->verboseMode = verboseMode;
     isControlPressed = false;
 
     if(hideRotationSett){
@@ -184,7 +185,7 @@ void PreviewImageWdgt::on_tbSaveAs_clicked()
         const bool r = lastPixTxt.save(fileNam);
         QMessageBox::information(this, tr("Image"), r ? tr("Done)") :
                                                         tr("Couldn't save the image"));
-
-        qDebug() << "export to file " << fileNam << r;
+        if(verboseMode)
+            qDebug() << "export to file " << fileNam << r;
     }
 }

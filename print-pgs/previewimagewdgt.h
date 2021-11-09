@@ -21,8 +21,10 @@ class PreviewImageWdgt : public QWidget
     Q_OBJECT
 
 public:
-    explicit PreviewImageWdgt(const bool &hideRotationSett, QWidget *parent = 0);
+    explicit PreviewImageWdgt(const bool &hideRotationSett, const bool &verboseMode, QWidget *parent = 0);
     ~PreviewImageWdgt();
+    bool verboseMode;
+
     PrintImageHelper::PrintSettCache printSett;
 
     QPixmap getLastPixmap() const;
