@@ -185,7 +185,7 @@ void PrinterSetupWdgt::loadThisSett(QVariantMap map)
 
 void PrinterSetupWdgt::initObjects()
 {
-    previewOptions = new PreviewImageWdgt(true, this);
+    previewOptions = new PreviewImageWdgt(true, verboseMode, this);
     connect(this, SIGNAL(setReadyImage(QPixmap,QString)), previewOptions, SLOT(setReadyImage(QPixmap,QString)) );
     ui->vl4preview->addWidget(previewOptions);
 
