@@ -62,7 +62,15 @@ void UcPrintLabel::initPage()
 
      ui->cbxModel->clear();
      ui->cbxModel->setCurrentIndex(-1);
-     ui->cbxModel->addItems(QString("KI-UC-BB-C-032 KI-UC-BB-HC-033 KI-UC-BB-ZC-034 KI-UC-BB-HZC-035 KI-UC-BB-I-036 KI-UC-BB-HI-037 KI-UC-BB-ZI-038 KI-UC-BB-HZI-039").split(" ", QString::SkipEmptyParts));
+     ui->cbxModel->addItems(QString("KI-UC-BB-C-032 KI-UC-BB-HC-033 KI-UC-BB-ZC-034 KI-UC-BB-HZC-035 KI-UC-BB-I-036 KI-UC-BB-HI-037 KI-UC-BB-ZI-038 KI-UC-BB-HZI-039")
+                            .split(" ",
+                              #if QT_VERSION >= QT_VERSION_CHECK(5, 13, 0)
+                                  Qt::SkipEmptyParts
+                              #else
+                                  QString::SkipEmptyParts
+                              #endif
+                                  )
+                            );
 
      connect(ui->cbxModel, SIGNAL(currentIndexChanged(int)), this, SLOT(onCbxModel_currentIndexChanged(int)) );
      ui->cbxModel->setCurrentIndex(1);

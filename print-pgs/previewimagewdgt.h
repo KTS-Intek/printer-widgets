@@ -55,6 +55,7 @@ public slots:
     void updatePrintImage();
 
 
+
 protected:
 //    void wheelEvent(QWheelEvent *event);
 

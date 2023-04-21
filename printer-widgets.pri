@@ -17,15 +17,15 @@ INCLUDEPATH  += $$PWD\
 include(../printer-shared/printer-shared.pri)
 #include(../../../QrCode/qzxing-v2/src/QZXing.pri)
 
-win32|android {
-include(../../../QrCode/qzxing-v3/src/QZXing.pri)
-}else{
-#for a static library
-INCLUDEPATH += $$PWD/../../libs/headers/qzxing/
-INCLUDEPATH += $$PWD/../../libs/headers/qzxing/zxing
+#win32|android {
+include(../../../QrCode/qzxing-v3.3/src/QZXing.pri)
+#}else{
+##for a static library, v3.3 doesn't generate qr codes
+#INCLUDEPATH += $$PWD/../../libs/headers/qzxing/
+#INCLUDEPATH += $$PWD/../../libs/headers/qzxing/zxing
 
-LIBS += -L$$PWD/../../libs/libs -lQZXing
-}
+#LIBS += -L$$PWD/../../libs/libs -lQZXing
+#}
 
 
 HEADERS += \

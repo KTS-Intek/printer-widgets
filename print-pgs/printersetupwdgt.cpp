@@ -24,7 +24,6 @@
 #include "src/nongui/settloader.h"
 
 
-#define QR_TEXT_MESSAGE "Hi,\nHow are you?"
 
 //----------------------------------------------------------
 
@@ -34,7 +33,10 @@ PrinterSetupWdgt::PrinterSetupWdgt(const QString &defaultimagepath, const bool &
 {
     ui->setupUi(this);
 
+
     initObjects();
+
+
 }
 
 //----------------------------------------------------------
@@ -54,11 +56,11 @@ QPixmap PrinterSetupWdgt::getPagePix()
     if(printSett.genearateaqrcode){
 
         qr = printSett.enqrcustomposition ?
-                    QrCodeGenerator::encode(QR_TEXT_MESSAGE, printSett.qrCorrLetter, printSett.qrwidthpx, printSett.qrheightpx) :
-                    QrCodeGenerator::getPagePix(printSett, QR_TEXT_MESSAGE);
+                    QrCodeGenerator::encode(prevTxt.qrTextMessage, printSett.qrCorrLetter, printSett.qrwidthpx, printSett.qrheightpx) :
+                    QrCodeGenerator::getPagePix(printSett, prevTxt.qrTextMessage);
     }
 
-    QPixmap p = PrintImageHelper::getPixmapWithUserDataExt(previewOptions->printSett, "1234567890abcdef routerni MYDEV", "$eui64 $ni $model", " ", qr);
+    QPixmap p = PrintImageHelper::getPixmapWithUserDataExt(previewOptions->printSett, prevTxt.euiline, prevTxt.euilinekeys, prevTxt.euilineslitsymb, qr);
 //    const QVariantMap map = PrintImageHelper::getMapAboutDev(ui->leEUI64->text().simplified().trimmed(), "$eui64 $ni", " ");
 
 
@@ -136,7 +138,7 @@ PrintImageHelper::PrintSettCache PrinterSetupWdgt::getPagePrintSett()
 
 void PrinterSetupWdgt::loadThisSett(QVariantMap map)
 {
-    PrintImageHelper::PrintSettCache printSett = PrintImageHelper::variantMap2printSett(map);
+    PrintImageHelper::PrintSettCache printSett = PrintImageHelper::variantMap2printSettExt(map, printSettDefault);
     //page
     ui->sbWidth->setValue(              printSett.widthMM               );
     ui->sbHeight->setValue(             printSett.heightMM              );
@@ -185,6 +187,7 @@ void PrinterSetupWdgt::loadThisSett(QVariantMap map)
 
 void PrinterSetupWdgt::initObjects()
 {
+    printSettDefault = PrintImageHelper::defaultPrintSett();
     previewOptions = new PreviewImageWdgt(true, verboseMode, this);
     connect(this, SIGNAL(setReadyImage(QPixmap,QString)), previewOptions, SLOT(setReadyImage(QPixmap,QString)) );
     ui->vl4preview->addWidget(previewOptions);
@@ -289,7 +292,7 @@ void PrinterSetupWdgt::on_pbSave_clicked()
 void PrinterSetupWdgt::onpbUpdateHtml_clicked()
 {
     previewOptions->printSett = getPagePrintSett();
-    emit setReadyImage(getPagePix(), QR_TEXT_MESSAGE);//00 0D 6F 00  00 7A 8E 23
+    emit setReadyImage(getPagePix(), prevTxt.bottomMessage);//00 0D 6F 00  00 7A 8E 23
 }
 
 //----------------------------------------------------------
@@ -390,7 +393,7 @@ void PrinterSetupWdgt::on_pushButton_clicked()
 
 void PrinterSetupWdgt::on_pbDefault_clicked()
 {
-    loadThisSett(PrintImageHelper::printSett2variantMap(PrintImageHelper::defaultPrintSett()));
+    loadThisSett(PrintImageHelper::printSett2variantMap(printSettDefault));
 }
 
 //----------------------------------------------------------

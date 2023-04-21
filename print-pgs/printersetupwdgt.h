@@ -17,8 +17,10 @@ class PrinterSetupWdgt : public QWidget
     Q_OBJECT
 
 public:
-    explicit PrinterSetupWdgt(const QString &defaultimagepath, const bool &generateQrFoced, const bool &verboseMode, QWidget *parent = 0);
+    explicit PrinterSetupWdgt(const QString &defaultimagepath, const bool &generateQrFoced, const bool &verboseMode, QWidget *parent = nullptr);
     ~PrinterSetupWdgt();
+
+    PrintImageHelper::PrintSettCache printSettDefault;
 
     QPixmap getPagePix();
 
@@ -29,6 +31,21 @@ public:
     bool verboseMode;
 
     PrintImageHelper::PrintSettCache getPagePrintSett();
+
+    struct PreviewTemplateText
+    {
+        QString qrTextMessage;
+        QString bottomMessage;
+
+        QString euiline;
+        QString euilinekeys;
+        QString euilineslitsymb;
+
+        PreviewTemplateText() :
+            qrTextMessage("Hi,\nHow are you?"), bottomMessage("Hi,\nHow are you?") ,
+        euiline("1234567890abcdef routerni MYDEV"), euilinekeys("$eui64 $ni $model"), euilineslitsymb(" ")
+        {}
+    } prevTxt;
 
 
 signals:

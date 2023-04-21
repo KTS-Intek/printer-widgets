@@ -773,7 +773,7 @@
            <item row="0" column="3" rowspan="6">
             <widget class="QLabel" name="label_4">
              <property name="text">
-              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Text&lt;br/&gt;$eui64 = EUI64&lt;br/&gt;$ni = NI&lt;br/&gt;$lcuni = NI from EUI64&lt;br/&gt;$date = current date&lt;br/&gt;$model = model&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Text&lt;br/&gt;$eui64 = EUI64&lt;br/&gt;$ni = NI&lt;br/&gt;$lcuni = NI from EUI64&lt;br/&gt;$date = current date&lt;br/&gt;$model = model&lt;br&gt;$smplText=generated text&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
              </property>
              <property name="scaledContents">
               <bool>false</bool>

@@ -42,5 +42,7 @@ void PrinterHelper::onUpdateAvPrinters(QString lastPrinterName)
     lastValidCbx->clear();    
     lastValidCbx->addItems(l);
     lastValidCbx->setCurrentIndex(indx);
+
+    emit onPrintersUpdated();
 }
 

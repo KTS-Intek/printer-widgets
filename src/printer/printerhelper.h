@@ -13,6 +13,9 @@ public:
 
     static int getCbxIndx(const QString &s, QComboBox *c);
 
+signals:
+    void onPrintersUpdated();
+
 public slots:
     void request2update();
 
