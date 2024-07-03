@@ -179,6 +179,8 @@ void PreviewImageWdgt::on_tbSaveAs_clicked()
         QString extn = fileNam.right(4).toLower();
         if(!QString(".bmp .jpg .png .ppm .xbm .xpm").split(" ").contains(extn))
             fileNam.append(".png");
+        SettLoader::saveLastDir(fileNam);
+
 
         //        int h = pain
 
